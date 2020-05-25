@@ -480,6 +480,19 @@ getJSON("/post,json").then(function(json){
 
 ## async函数
 
+* 返回一个promise对象，可以用then方法添加回调函数，函数执行时遇到await就会先返回
+
+```javascript
+async function getStockPriceByName (name) {
+	var symbol = await getStockSymbol(name);
+	var stockPrice = await getStockPrice(symbol)
+	return stockPrice
+}
+getStockPriceByName('goog').then(function(result){
+	console.log(result);
+})
+```
+
 ## Class的基本语法
 
 ### 简介
