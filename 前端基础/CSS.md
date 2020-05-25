@@ -1,0 +1,84 @@
+# CSS
+
+### 关于CSS3新增的特性
+
+* 边框：
+  * border-radius:圆角边框
+  * border-shadow:矩形阴影
+  * border-image图片边框
+
+* 动画：@keyframes
+* 2D转换：
+  * translate()
+  * rotate()
+  * scale()
+* 文本效果：
+  * text-shdow
+
+## CSS选择器
+
+* 元素选择器
+
+  * 通常是某个html元素，甚至可以是html本身
+
+  * ```css
+    html {color:black;}
+    ```
+
+* 类选择器
+
+  * 将选择器与元素关联，需要在元素中添加class属性，然后通过.属性名来使用选择器
+
+* ID选择器
+
+  * 在元素中添加id属性，通过#s属性名来使用选择器
+
+* 选择器分组
+
+  * 可以将任意多个元素选择器使用逗号隔开，形成选择器分组，一次来使用多个选择器
+
+* 后代选择器
+
+  * 对元素内的元素进行选择，通过父元素 子元素的形式进行选择，特点是无论嵌套层数有多少都可以确认选择出该父元素下的所有匹配的后代元素
+
+  * ```css
+    h1 em {color:red;}
+    选择的是h1中的所有em元素
+    ```
+
+* 子元素选择器
+
+  * 相比于后代选择器，子元素选择器只选择某个元素的第一个匹配子元素。也无法做出嵌套下的选择.但是如果有两个对应的父元素下的第一子元素，则两个都会被选择。
+
+  * ```css
+    h1 > p{color:red}
+    ```
+
+* 相邻兄弟选择器
+
+  * 选择紧接在另一个元素后的元素，而且两者有相同的父元素。比如同一父元素下的h1元素和p元素
+
+  * ```css
+    h1 + p {margin-top:50px;}
+    ```
+
+* 伪类
+
+  * 锚伪类
+    * a:link    未访问的链接
+    * a:visited    已访问的链接
+    * a:hover    鼠标在连接上悬停
+    * a:active    选定的链接 
+  * :first-child：选择元素的第一个子元素
+
+* 伪元素
+
+  ![image-20200521233346607](C:\Users\narwh\AppData\Roaming\Typora\typora-user-images\image-20200521233346607.png)
+
+* css3选择器
+
+  ![image-20200521233517166](C:\Users\narwh\AppData\Roaming\Typora\typora-user-images\image-20200521233517166.png)
+  
+  * nth-of-type与nth-child 的区别在于前者技术是从对应的子元素开始计数，后者是从第一个子元素开始计数
+  
+  ​	
