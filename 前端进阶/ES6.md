@@ -126,33 +126,147 @@ foo({x:1,y:2})  //1,2
 * 函数的length属性：会返回没有指定默认值的参数的个数，如果设置了默认值的参数不是尾参数，length属性也不会记录默认属性及其以后的参数
 * 参数默认值的作用域：函数进行声明初始化时，参数会形成一个单独的作用域，等到初始化结束这个作用域会消失
 
+### rest参数
+
+...valueName
+
+* rest参数搭配的变量是一个数组，该变量将多余的参数放入其中,所有数组特有的方法都可用于这个变量
+
+### 箭头函数
+
+* 如果箭头函数不需要参数或需要多个参数，就用圆括号代替参数部分
+* 可以简化回调函数，也可以和变量解构，rest参数结合使用
+* 注意事项
+  * 箭头函数内的this对象就是定义时所在的对象，而不是使用时所在的对象
+    * 箭头函数没有自己的this，导致内部的this就是外层代码块的this
+      箭头函数的arguments变量就是函数foo的arguments变量
+      箭头函数没有自己的this，则不能使用apply(),call(),bind()这些方法改变this的指向
+  * 不可以当做构造函数，也就是说，不可以使用new命令，否则会抛出一个错误
+  * 不可以使用arguments对象，该对象在函数体内不存在。如果要用可以使用rest参数代替
+  * 不可以使用yield命令，因为箭头函数不能作为Generator函数
+  * 绑定this：ES7提出了函数绑定运算符，该运算符会自动将左边的对象作为上下文环境(即this对象)绑定到右边的函数上
+    * foo::bar等同于bar.bind(foo)
+
 ## 数组的扩展
+
+### 扩展运算符
+
+将一个数组转为用逗号分隔的参数序列，也就是说可以直接将数组作为参数使用，该运算符主要用于函数调用
+
+应用：
+
+* 合并数组：[...arr1,..arr2,...arr3] == arr1.concat[arr2,arr3]
+* 与解构赋值结合：如果扩展运算符用于数组赋值，只能将其放在参数的最后一位，否则会报错
+* 函数返回值：JavaScript的函数只能返回一个值，如果需要返回多个值，只能返回数组或对象，扩展运算符解决了这个问题
+* 字符串：可以将字符串转换为真正的数组  [...'hello']
+* 实现Iterator接口的对象：任何Iterator接口的对象都可以用扩展运算符转为真正的数组
+* Map和Set结构，Generator函数都可使用扩展运算符
+
+### Array.from()
+
+用于将两类对象转为真正的数组
+
+* 类似数组的对象。本质是具有length属性。
+* 可遍历对象(包括Set和Map)->Iterator接口：扩展运算符也可以将此类型数据结构转换为数组，但扩展运算符无法转换类似数组的对象
+* 另一个应用：将字符串转换为数组，然后返回字符串的长度(可以正确处理各种Unicode字符)，可以避免JavaScript将大于\uFFFF的Unicode字符算作连个字符的bug
+
+### Array.of()
+
+用于将一组值转换为数组。主要目的：弥补数组的构造函数Array()的不足。参数个数的不同会导致Array()的行为有差异。可以代替Array()或new Array()，如果没有参数则返回一个空数组
+
+* 1个参数：指定数组的长度
+* 不少于2个参数：返回由数组组成的新数组
+
+### 数组实例的copyWithin()
+
+### 数组实例的find()和findIndex()
+
+### 数组实例的fill()
+
+### 数组实例的entries(),keys(),values()
+
+### 数组实例的includes()
+
+### 数组的空位
+
+
+
+
+
+
+
+
 
 ## 对象的扩展
 
 ### 属性的简洁表示法
 
+ES6允许直接写入变量和函数作为对象的属性和方法，允许在对象中只写属性名，不写属性值，这时，属性值等于属性名所代表的的变量。方法也可以简写。CommonJS模块输出变量就非常适合这种写法
+
 ### 属性名表达式
+
+用表达式作为属性名，这时要将表达式放在方括号内；例obj['a' + 'bc'] = 123。属性名表达式和简洁表达式法不能同时使用；属性名表达式如果是一个对象，默认情况下会自动将对象转为字符串[object Object]
 
 ### 方法的name属性
 
+函数name属性返回函数名。对象方法也是函数，因此也有name属性；如果对象的方法使用了getter和setter，则name属性不是在该方法上面，而是在该方法属性的描述对象get和set属性上，返回值是方法名前加get和set；
+
 ### Object.is()
+
+用来比较两个值是否严格相等，与严格运算符的行为基本一致；不同之处：+0 != 0，NaN等于自身
 
 ### Object.assign()
 
+用于将源对象的所有可枚举属性复制到目标对象，第一个参数书目标对象，后面的参数都是源对象；
+
+* 如果目标对象与源对象有同名属性，或对个源对象有同名属性，则后面的属性会覆盖前面的属性；如果只有一个参数，Object.assign会直接返回该参数；
+* 如果该参数不是对象，则会先转成对象，然后返回，undefined和null无法转成对象，如果将它们作为参数就会报错；如果非对象参数出现在源对象的位置(即非首参数)，这些参数都会转成对象，如果无法转成对象便会跳过；
+* 其他类型的值不在首参数也不会报错，但是除了字符串会以数组的形式复制到目标对象，其他值都不会产生效果；
+* 复制的属性是有限的，只复制源对象自身的属性(不复制继承属性)也不复制不可被枚举的属性(enumerable:false)
+* 用途：为对象添加属性，为对象添加方法，克隆对象，合并多个对象，为属性指定默认值
+
 ### 属性的可枚举性和遍历
+
+对象的每一个属性都有一个描述对象，用于控制该属性的行为，Object.getOwnPropertyDescriptor方法可以获取该属性的描述对象
+
+遍历对象属性的方法：
+
+* for...in：循环遍历对象自身的和继承的可枚举属性(不含Symbol属性)
+* Object.keys()：返回一个数组，包括对象自身的(不含继承的)所有可枚举属性(不含Symbol属性)
+* Object.getOwnPropertyNames(obj)：返回一个数组，包含对象自身的所有属性(不含Symbol属性,但是包括不可枚举属性)
+* Object.getOwnPropertySymbols(obj)：返回一个数组，包含对象自身的所有Symbol属性
+* Reflect.ownKeys(obj)：返回一个数组，包含对象自身的所有属性，不管属性名是Symbol还是字符串，也不管是否可枚举
+
+
 
 ### \__proto__属性
 
-### Object.setPrototypeOf()，Object.getPrototypeOf()
+用来读取或设置当前对象的prototype对象，调用的是Object.prototype.\_\_proto\_\_;如果一个对象本身部署了\__proto__属性，则该属性的值就是对象的原型
+
+### Object.setPrototypeOf()
+
+方法作用于\__proto__相同,用来设置一个对象的prototype对象，返回参数对象本身；如果第一个参数不是对象，则会自动转为对象。但是由于返回的还是第一个参数，所以这个操作不会产生任何效果
+
+### Object.getPrototypeOf()
+
+用于读取一个对象的prototype对象；如果参数不是对象，则会被自动转为对象；如果参数是undefined或null，无法转为对象所以会报错
 
 ### Object.keys(),Object.values(),Object.entires()类似于数组实例的方法
 
+* Object.keys()：返回一个数组，成员是参数对自身的(不含继承的)所有可遍历(enumerable)属性的键名
+* Object.values()：返回一个数组，方法是参数对象自身的(不含继承的)所有可遍历(enumerable)属性的键值。会过滤属性名为Symbol的属性(不遍历该值)；如果方法的参数是一个字符串，则会返回各个字符组成的一个数组；如果参数不是对象，会先将其转为对象，数组和布尔值的包装对象都不会为实例添加非继承属性，所有会返回空数组
+  * 首先遍历所有属性名为数值的属性，按照数字排序
+  * 其次遍历所有属性名为字符串的属性，按照生成时间排序
+  * 最后遍历所有属性名为Symbol值的属性，按照生成时间排序、
+* Object.entries()：返回一个数组，成员是参数对象自身的(不含继承的)所有可遍历(enumerable)属性的键值对数组；会过滤属性名为Symbol的属性(不遍历该值)；基本用途是遍历对象的属性，另一用途是将对象转为真正的Map结构
+
 ### 对象扩展运算符
+
+对象的解构赋值用于从一个对象取值，相当于将所有可遍历的，但尚未被读取的属性分配到指定的对象上面；扩展运算符用于取出参数对象的所有可遍历属性，并将其复制到当前对象中
 
 ### Object.getOwnPropertyDescriptors()
 
-
+用来返回某个对象属性的描述对象
 
 ## Symbol
 
@@ -474,9 +588,110 @@ getJSON("/post,json").then(function(json){
 
 ## Iterator和for...of循环
 
-## generator函数的语法
+## Generator函数的语法
+
+### 基础概念
+
+是ES6提供的一种异步编程的解决方案。从语法上可以把它理解成一个状态机，封装了多个内部状态。
+
+* 执行Generator函数会返回一个遍历器对象。也就数说Generator除了是状态机，还是一个遍历器对象生成函数，返回的遍历器对象可以依次遍历Generator函数内部的每一个状态
+* 形式上是一个普通函数，特征：
+  * function命名与函数名之间有一个星号
+  * 函数体内部使用yield语句定义不同的内部状态
+
+```js
+function* helloWorldGenerator(){
+	yield 'hello';
+	yield 'world';
+	return 'ending';
+}
+var hw = helloWorldGenerator();
+hw.next();//{value:'hello',done:false}
+hw.next();//{value:'world',done:false}
+hw.next();//{value:'ending',done:true}
+hw.next();//{value:undefined,done:true}
+```
+
+以上代码定义的Generator函数共有三个状态，调用方法与普通的函数一样，不同的是调用后该函数并不执行，返回的也不是函数的运行结果，而是一个指向内部状态的指针对象；必须调用遍历器对象的next方法，使指针移向下一个状态。也就是说每次调用next方法，内部指针函数就从头部或上一次停下来的地方开始执行，直到遇到下一条yield/return语句为止
+
+* yield语句是暂停执行的标志
+* value属性为内部状态的值，done属性是一个布尔值，表示遍历是否结束
+
+### yield表达式与yield*表达式
+
+yield语句是暂停标志，因为遍历器对象只有调用next方法才会遍历下一个内部状态，所以需要有可暂停的执行函数
+
+一个函数只能执行一次return语句，但是可以执行多次yield语句。可以说Generator生成了一系列的值。如果不使用yield语句，这时他就变成了一个暂缓执行函数。
+
+如果用在另一个表达式中，必须放在圆括号里面。
+
+如果在Generator函数内部调用另一个Generator函数，默认情况下是没有结果的。这时候需要用到yield*语句，在一个Generator函数里执行另一个Generator函数
+
+### next方法的参数
+
+### 与Iterator接口的关系，for...of循环
+
+### Generator.prototype.throw与Generator.prototype.return
+
+### 作为对象属性的Generator和Generator函数的this
+
+### Generator与状态机与协程
+
+### 异步操作的同步化表达
+
+### 控制流管理
+
+### 部署Iterator接口
+
+### 作为数据结构
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## Generator函数的异步应用
+
+### 异步的概念和回调函数
+
+Promise回顾
+
+Generator函数
+
+Thunk函数
+
+co模块
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## async函数
 
@@ -491,7 +706,37 @@ async function getStockPriceByName (name) {
 getStockPriceByName('goog').then(function(result){
 	console.log(result);
 })
+//async表明函数内部有异步操作，调用该函数会立即返回一个promise对象
 ```
+
+通过比较就会发现，async函数就是将Generator函数的*替换成async，将yield替换成await，对Generator函数的改进体现为以下四点
+
+* 内置执行器：Generator函数执行必须依靠执行器，所以才有了co模块。async函数自带执行器，也就是说async函数的执行与普通函数一样只需一行
+* 更好的语义：async表示函数有异步操作，await表示紧跟在后面的表达式需要等待结果。
+* 更广的适用性：co模块约定，yield命令后面只能是Thunk函数或Promise对象，而async函数的await命令后面可以是Promise对象和原始类型的值、
+* 返回值是Promise：比Generator函数的返回值是Iterator对象方便了许多。可以用then方法指定下一步的操作。async函数完全可以看做由多个异步操作包装成的一个Promise对象，而await命令就是内部then命令的语法糖
+
+```js
+function timeout(ms){
+	return new Promise((resolve) => {
+		setTimeout(resolve,ms)
+	})
+}
+async function asyncPrint(value,ms){
+	await timeout(ms)
+	console.log(value);
+}
+asyncPrint('helloworld',50)
+//以上代码指定50ms后输出helloworld
+```
+
+
+
+
+
+
+
+
 
 ## Class的基本语法
 
@@ -639,13 +884,73 @@ const logger = new Logger()
 const {printName} = logger;
 printName()//报错
 //单独提取出来使用时this会指向该方法运行时所在的环境，因此找不到print方法而报错
+
+//解决方法
+//1
+class Logger {
+	constructor() {
+		this.printName = this.printName.bind(this)
+	}
+}
+//2
+class Logger{
+	constructor() {
+	    this,printName = (name = 'there') =>{
+				this.print(`Hello ${name}`)
+			}
+	}
+}
+//3
+function selfish(targer){
+	const cache = new WeakMap();
+	const handler = {
+		get(target,key){
+			const value = Reflect.get(target,key);
+			if(typeof value !== 'function'){
+				return value;
+			}
+			if(!cache.has(value)){
+				cache.set(value,value.bind(target));
+			}
+				return cache.get(value)
+		}
+	}
+	const proxy = new Proxy(target,handler)
+	return proxy;
+}
+const logger = selfish(new Logger)
 ```
 
 
 
 ### getter和setter
 
-### 静态方法，静态属性，实例属性
+在类的内部可以使用get和set关键字对某个属性值设置存值函数和取值函数，拦截该属性的存储行为
+
+```js
+class MyClass {
+	constructor() {
+		//...
+	}
+	get prop(){
+		return 'getter'
+	}
+	set prop(value){
+		console.log('setter:'+value);
+	}
+}
+let inst = new MyClass();
+inst.prop = 123;  //setter:123
+inst.prop;  //'getter'
+```
+
+存值函数和取值函数是设置在属性的Descriptor对象上的
+
+### Generator方法，静态方法，静态属性，实例属性
+
+Generator方法：在某个方法之前加上*，就表示该方法是一个Generator函数。
+
+静态方法：类相当于实例的原型，所有在类中定义的方法
 
 
 
@@ -670,6 +975,16 @@ printName()//报错
 
 
 ## Class的继承
+
+### 简介
+
+可以通过extends关键字实现继承，比ES5通过原型链实现继承更加清晰和方便
+
+
+
+
+
+
 
 ## 修饰器
 

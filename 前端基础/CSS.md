@@ -15,6 +15,20 @@
 * 文本效果：
   * text-shdow
 
+
+
+
+
+## css中的单位
+
+* px：像素
+* em：1em为字体当前尺寸，2em为字体尺寸的两倍、
+* ex：一个ex是一个字体的x-height(x-height通常是字体尺寸的一般)
+* %：百分比
+* rem：相对与根节点html的字体大小来计算
+* vw：视窗宽度：1vw等于视窗宽度的1%
+* vh：视窗高度：1vh等于视窗高度的1%
+
 ## CSS选择器
 
 * 元素选择器
@@ -73,12 +87,10 @@
 
 * 伪元素
 
-  ![image-20200521233346607](C:\Users\narwh\AppData\Roaming\Typora\typora-user-images\image-20200521233346607.png)
+  
 
 * css3选择器
 
-  ![image-20200521233517166](C:\Users\narwh\AppData\Roaming\Typora\typora-user-images\image-20200521233517166.png)
   
-  * nth-of-type与nth-child 的区别在于前者技术是从对应的子元素开始计数，后者是从第一个子元素开始计数
-  
+
   ​	
