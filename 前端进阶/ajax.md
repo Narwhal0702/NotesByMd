@@ -34,7 +34,12 @@ xhr.onreadystatechange = function() {
 
 * open()设置请求方式和请求地址：参数分别是method请求文件的类型get/post；url为文件在服务器上的位置；async：true为异步false为同步，永远设置为true
 * send()发送请求
-* onreadystatechange:监听状态变化，其中readyState参数分别为0-4:请求未初始化，服务器连接已建立，请求已接收，请求处理中，请求已完成且响应已就绪；status返回http状态码
+* onreadystatechange:监听状态变化，其中readyState参数分别为0-4:
+  * 请求未初始化
+  * 服务器连接已建立
+  * 请求已接收
+  * 请求处理中
+  * 请求已完成且响应已就绪，status返回http状态码
 
 ## 官方文档阅读
 

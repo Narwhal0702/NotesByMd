@@ -13,9 +13,15 @@
 * 使用key管理可复用的元素：vue通常会复用已有元素而不是从头开始渲染。比如在v-if与v-else中的输入框中输入内容时，切换后数据不会消失
 * 列表渲染v-for,基于一个数组来渲染一个列表，指令需要使用item in items（items也可以为一个值作为普通的for循环）的语法来使用。渲染时支持第二个参数index；也可以用of代替in。可以通过v-for遍历一个对象的键和值与索引。v-if和v-for一起使用时v-for的优先级更高，如果要有条件的跳过循环执行，可以将if放在更外层。
 * 如果不使用 key，Vue 会使用一种最大限度减少动态元素并且尽可能的尝试就地修改/复用相同类型元素的算法。而使用 key 时，它会基于 key 的变化重新排列元素顺序，并且会移除 key 不存在的元素。
-* v-model在表单元素上创建双向绑定。修饰符.lazy可以在改变事件之后进行绑定提高性能；,number输入值转为数值类型；.trim去除首尾字符串
+* v-model在表单元素上创建双向绑定。修饰符.lazy可以在改变事件之后进行绑定提高性能；.number输入值转为数值类型；.trim去除首尾字符串
 
 ## 进阶使用
+
+
+
+
+
+
 
 ### 过滤器
 
@@ -122,6 +128,60 @@ this.$refs.comA.message
 ```html
 <my-component v-on:my-event="doSomething"></my-component>
 ```
+
+
+
+### 响应式原理
+
+当把一个普通的JavaScript对象传入vue实例中作为data选项，Vue将遍历该对象的所有property，并使用Object.defineProperty将这些property全部转为getter/setter
+
+这些getter和setter对用户来说是不可见的，但是内部他们能让vue追踪依赖，在property被访问和修改的时候通知变更。
+
+每个组件的实例都对应一个watcher实例，他在组件渲染的过程中把接触过的数据property记录为依赖，之后当依赖项的setter触发时，会通知watcher，从而使它关联的组件重新渲染
+
+* 注：不能检测数组和对象的变化
+
+  * 对于对象：vue无法检测property的添加或移除，由于Vue会在初始化实例时对property进行getter/setter转化，所以property必须在data对象上存在才能转换为响应式的；对于已经创建的实例，Vue 不允许动态添加根级别的响应式 property。但是，可以使用 `Vue.set(object, propertyName, value)` 方法向嵌套对象添加响应式 property，还可以使用 `vm.$set` 实例方法，这也是全局 `Vue.set` 方法的别名
+
+  * 对于数组：
+
+    ```js
+    //以下两种方式都可以实现和 vm.items[indexOfItem] = newValue 相同的效果，同时也将在响应式系统内触发状态更新
+    // Vue.set
+    Vue.set(vm.items, indexOfItem, newValue)
+    vm.items.splice(indexOfItem, 1, newValue)
+    //也可以使用 vm.$set 实例方法，该方法是全局方法 Vue.set 的一个别名
+    vm.$set(vm.items, indexOfItem, newValue)
+    ```
+
+---
+
+### Vue数据双向绑定
+
+Object.defineProperty()：
+
+* 缺点
+  * 深度监听需要一次递归
+  * 无法监听新增属性/删除属性
+  * 无法原生监听数组，需要特殊处理
+
+
+
+#### Vue组件中的data为什么是一个函数
+
+组件是可复用的Vue实例，一个组件被创建好之后，就可能被用在各个地方，而组件不管被复用了多少次，组件中的data数据都应该是隔离的互不影响。基于这个理念，组件每复用一次，data数据就用该被复制一次，之后当某一处复用的地方组件内data数据被改变时，其他复用地方组件的data数据不受影响。
+
+能实现这个效果是因为data是一个函数返回值的形式，这样就类似于给每个组件实例创建私有空间。所以每一个组件实例可以维护一份被返回对象的独立拷贝。如果改成对象形式，那么复用的组件会共享同一个数据
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -570,3 +630,31 @@ router.beforeEach：注册全局前置守卫：当一个导航触发时，全局
   * $children通过数组的下标访问或所有子组件
   * $refs：默认是一个空的对象，需要在使用的组件中添加
 * 子组件访问父组件$paent   
+
+### hash和history的区别
+
+最直观的区别是url中hash模式带了一个#
+
+前端路由的核心就在于改变视图的同时不会向后端发出请求
+
+**hash**：hash虽然出现在url中，但不会被包括在HTTP请求中，对后端完全没有影响，因此hash不会重新加载页面
+
+**history**：利用了html5 history interface中新增的pushState()和replaceState()方法，这两个方法应用于浏览器中的历史记录栈，在当前已有back，forward，go的基础上，他们提供了对浏览记录进行修改的功能，只是他们执行修改时，虽然改变了当前url，但浏览器不会立即发送后端请求
+
+hash模式下，仅仅hash符号之前的内容会被包含在请求中。因此对于后端来说即使没有做到对路由的全覆盖，也不会返回404错误
+
+history模式下，前端的url必须和实际向后端发起请求的url一致
+
+
+
+
+
+
+
+---
+
+# Vue原理
+
+MVVM：数据驱动视图
+
+### 为什么v-for中要使用key

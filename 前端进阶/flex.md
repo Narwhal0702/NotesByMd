@@ -59,7 +59,7 @@
 	/*
 	flex-start:交叉轴的起点对齐
 	flex-end:交叉轴的终点对齐
-	center:交叉轴的终点对齐
+	center:交叉轴的中点对齐
 	baseline:交叉轴的第一行文字的基线对齐
 	stretch(默认值):如果项目未设置高度或设为auto,将占满整个容器的高度
 	*/
