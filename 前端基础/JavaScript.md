@@ -292,7 +292,9 @@ ToNumber：true 转换为 1， false 转换为 0。 undefined 转换为 NaN， n
 
 基本类型(值类型)：String，Number，boolean，undefined，null，Symbol
 
-引用类型(对象类型)：Object，Function，Array。后两者都是特殊的对象
+引用类型(对象类型)：Object，Date，Function，Array。后三者都是特殊的对象
+
+**新增的：**基本数据类型：bigint
 
 判断方式：
 
@@ -748,7 +750,75 @@ listen('click',function handle(evt){
 
 当多个函数嵌套，每个函数代表异步序列的一个步骤，这种代码也就是回调地狱
 
-以上代码为嵌套回调；但是如果将他变为链式回调，也是在代码的执行块中不断跳跃，难以追踪。顺序阻塞式的计划无法很好地映射到回调的异步代码，这是主要的缺陷。
+以上代码为嵌套回调；但是如果将他变为链式回调，也是在代码的执行块中不断跳跃，难以追踪。顺序阻塞式的计划无法很好地映射到回调的异步代码，导致代码逻辑混乱可读性和可修改行都比较困难，这是主要的缺陷。
+
+其次想比与其他代码来说，无法得知回调什么时候调用是否过早或过晚，调用次数太多或太少等问题。
+
+需要解决这种问题就比较复杂，比如要各种条件判断语句，设置超时取消事件，传入一个参数从而保留错误等等。
+
+---
+
+## Promise
+
+通过回调管理异步的缺陷：缺乏顺序性和可信任性。顺序性就是常说的回调地狱，导致代码难以维护。可信任性就是回调过程中无法监控他的状态，得知他是否过早或过晚调用，调用次数多少问题。
+
+```js
+function add(getX,getY,cb){
+	var x,y;
+	getX(function(xVal){
+		x = xVal;
+		if(y != undefined){
+			cb(x+y);
+		}
+	});
+	getY(function(yVal){
+		y = yVal;
+		if(x != undefined){
+			cb(x+y);
+		}
+	})
+}
+//fetch为同步或异步函数
+add(fetchX,fetchY,function(sum){
+	console.log(sum);
+})
+```
+
+```js
+function add(xPromise,yPromise){
+    //Promise.all接收一个promise数组并返回一个新的promise，该promise等待数组中所有promise完成
+	return Promise.all([xPromise,yPromise])
+    //这个promise决议后，取得收到的X和Y值并加在一起
+		.then(function(values){
+        //value是来自于之前决议的promise的消息数组
+			return values[0]+values[1];
+		})
+}
+//fetch函数返回响应值的promise，可能就绪或未就绪
+add(fetchX(),fetchY())
+//得到一个这两个数组的和的promise，链式调用then来等待返回promise的协议
+	.then(function(sum){
+		console.log(sum);
+	})
+```
+
+这段代码中有两层Promise，fetchX和fetchY是直接调用的，他们的返回值(promise)被传给add；这些promise代表的底层值的可用时间可能是现在或将来，但promise保证了行为的一致性，可以按照不依赖与时间的方式追踪值X和Y。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

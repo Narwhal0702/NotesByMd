@@ -271,28 +271,6 @@
 
       * 解决方法：使用picture标签，picture中可包含source标签对图片进行兼容性处理
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ### block、inline、inline-block的区别。
 
 block元素会独占一行，多个block元素会各自新起一行。默认情况下，block元素宽度自动填满其父元素宽度。
@@ -312,3 +290,20 @@ inline元素的margin和padding属性，水平方向的padding-left, padding-rig
 
 
 inline-block：简单来说就是将对象呈现为inline对象，但是对象的内容作为block对象呈现。之后的内联对象会被排列在同一行内。比如我们可以给一个link（a元素）inline-block属性值，使其既具有block的宽度高度特性又具有inline的同行特性
+
+
+
+
+
+
+
+
+
+# CSS
+
+### 半透明边框
+
+通过rgba设置一个border的值为透明色，背景色会从透明处透出从而破坏布局颜色，可以使用background-clip：paddding-box
+
+初始值为border-box，意味着背景会被元素的border box裁减掉，如果不希望背景入侵边框所在的范围，就要设为padding box
+
