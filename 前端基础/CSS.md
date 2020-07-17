@@ -103,7 +103,7 @@
 
   * 他会根据屏幕增大或减小的时候，后面的样式会覆盖前面的样式，因此移动端优先使用min-width，PC端优先使用max-width
 
-  * ```css
+    ```css
     /*移动端优先*/
     /* iphone6 7 8 */
     body {
@@ -148,7 +148,7 @@
     
     ```
 
-  * ```css
+    ```css
     /*PC端优先*/
     /* pc width > 1024px */
         body {
@@ -194,21 +194,21 @@
 
 * 百分比布局：可以使浏览器中的组件的宽高随着浏览器的高度的变化而变化。CSS支持最大最小高，可以将百分比和max/min一起结合使用来定义元素在不同设备下的宽高
 
-  * ```css
-    /* iphone6 7 8 */
-    @media screen and (max-width: 375px) and (-webkit-device-pixel-ratio: 2) {
-        aside {
-          float: none;
-          width: 100%;
-          height: 3%;
-          background-color: black;
-        }
-        main {
-          height: calc(100vh - 3%);
-          background-color: red;
-        }
-    }
-    ```
+  ```css
+  /* iphone6 7 8 */
+  @media screen and (max-width: 375px) and (-webkit-device-pixel-ratio: 2) {
+      aside {
+        float: none;
+        width: 100%;
+        height: 3%;
+        background-color: black;
+      }
+      main {
+        height: calc(100vh - 3%);
+        background-color: red;
+      }
+  }
+  ```
 
   * 子元素的`height`或`width`中使用百分比，是相对于子元素的直接父元素，`width`相对于父元素的`width`，`height`相对于父元素的`height`；子元素的`top`和`bottom`如果设置百分比，则相对于直接非`static`定位(默认定位)的父元素的高度，同样子元素的`left`和`right`如果设置百分比，则相对于直接非`static`定位(默认定位的)父元素的宽度；子元素的`padding`如果设置百分比，不论是垂直方向或者是水平方向，都相对于直接父亲元素的`width`，而与父元素的`height`无关。跟`padding`一样，`margin`也是如此，子元素的`margin`如果设置成百分比，不论是垂直方向还是水平方向，都相对于直接父元素的`width`；`border-radius`不一样，如果设置`border-radius`为百分比，则是相对于自身的宽度，除了`border-radius`外，还有比如`translate`、`background-size`等都是相对于自身的；
 
@@ -216,15 +216,15 @@
 
 * rem布局：rem是相对于根元素html的font-size来决定大小，根元素的font-size相当于提供了一个基准，当页面的size发生变化时，只要改变font-size的值，那么以rem为固定单位的元素的大小也会发生响应的变化。因此通过rem实现相应式布局，只需根据视图容器的大小动态改变font-size
 
-  * ```js
-    var docEl = document.documentElement;
-    var resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize';
-    function recalc(){
-        var clientWidth = docEl.clientWidth;
-        if(!clientWidth){ return docEl.style.fontSize = 100 * (clientWidth / 750)+'px' }
-    }
-    window.addEventListener(resizeEvt,recalc,false);
-    ```
+  ```js
+  var docEl = document.documentElement;
+  var resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize';
+  function recalc(){
+      var clientWidth = docEl.clientWidth;
+      if(!clientWidth){ return docEl.style.fontSize = 100 * (clientWidth / 750)+'px' }
+  }
+  window.addEventListener(resizeEvt,recalc,false);
+  ```
 
   * 思路：
 
@@ -245,13 +245,13 @@
 
   * max-width：图片随着容器大小进行缩放
 
-    * ```css
-      img {
-          display: inline-block;
-          max-width: 100%;
-          height: auto;
-      }
-      ```
+    ```css
+    img {
+        display: inline-block;
+        max-width: 100%;
+        height: auto;
+    }
+    ```
 
     * `inline-block` 元素相对于它周围的内容以内联形式呈现，但与内联不同的是，这种情况下我们可以设置宽度和高度。
 
@@ -261,9 +261,9 @@
 
   * srcset
 
-    * ```css
-      <img srcset="photo_w350.jpg 1x, photo_w640.jpg 2x" src="photo_w350.jpg" alt="">
-      ```
+    ```css
+    <img srcset="photo_w350.jpg 1x, photo_w640.jpg 2x" src="photo_w350.jpg" alt="">
+    ```
 
     * 如果屏幕的dpi = 1的话则加载1倍图，而dpi = 2则加载2倍图，手机和mac基本上dpi都达到了2以上，这样子对于普通屏幕来说不会浪费流量，而对于视网膜屏来说又有高清的体验；如果浏览器不支持`srcset`，则默认加载src里面的图片
 
@@ -301,9 +301,48 @@ inline-block：简单来说就是将对象呈现为inline对象，但是对象�
 
 # CSS
 
+## 背景与边框
+
 ### 半透明边框
 
 通过rgba设置一个border的值为透明色，背景色会从透明处透出从而破坏布局颜色，可以使用background-clip：paddding-box
 
 初始值为border-box，意味着背景会被元素的border box裁减掉，如果不希望背景入侵边框所在的范围，就要设为padding box
+
+
+
+---
+
+
+
+
+
+
+
+## 形状
+
+### 自适应椭圆
+
+给任何正方形元素设置一个足够大的border-radius可以把它变成一个圆形
+
+border-radius可以单独指定水平和垂直半径，只要用一个`/` 分隔即可，只要把它圆角的两个半径值指定为元素宽高的一般就能得到一个精确的椭圆
+
+但是存在缺陷，当元素尺寸发生变化时，border-radius的值也要发生修改，所以可以用百分比设置为50%
+
+半椭圆和四分之一椭圆按照顺时针设置每个角的属性，平角为0，圆角为100%；
+
+```css
+自适应椭圆
+.div{
+    border-radius: 50%;
+}
+半椭圆
+.div{
+    border-radius: 100% 0 0 100% / 50%;
+}
+四分之一椭圆
+.div{
+    border-radius: 100% 0 0 0
+}
+```
 

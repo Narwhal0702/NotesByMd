@@ -14,12 +14,20 @@
 * 列表渲染v-for,基于一个数组来渲染一个列表，指令需要使用item in items（items也可以为一个值作为普通的for循环）的语法来使用。渲染时支持第二个参数index；也可以用of代替in。可以通过v-for遍历一个对象的键和值与索引。v-if和v-for一起使用时v-for的优先级更高，如果要有条件的跳过循环执行，可以将if放在更外层。
 * 如果不使用 key，Vue 会使用一种最大限度减少动态元素并且尽可能的尝试就地修改/复用相同类型元素的算法。而使用 key 时，它会基于 key 的变化重新排列元素顺序，并且会移除 key 不存在的元素。
 * v-model在表单元素上创建双向绑定。修饰符.lazy可以在改变事件之后进行绑定提高性能；.number输入值转为数值类型；.trim去除首尾字符串
+* 使用v-on绑定事件时如果函数后加入了一个()就获取不到事件参数e，需要手动传入一个$event默认事件参数对象
+* v-if和v-for不能一起使用,v-for的优先级更高比v-if先执行
+* 使用v-for遍历渲染的数据，如果在控制台直接使用.语法添加对象属性，已经渲染好的列表不会增加列表项；解决这个问题的方法是重新绑定一个增加了这个属性的新对象；使用Vue.set()或VueObj.$set()增加的对象属性可以渲染出来
+* v-for中的key作用：当v-for正在更新已经渲染过的元素列表时，会进行复用，如果数据项的顺序被改变，他不会移动dom来匹配数据项的改变，而是进行复用确保在特定索引下显示已被渲染过的每个元素；key的属性只能为string或number。可以提高渲染的性能，使vue不会去改变原有的元素和数据而是创建新的元素把新的数据渲染进去；也可以避免数据混乱的情况出现
 
 ## 进阶使用
 
+### :class和:style
 
+##### :class=“{classname:boolean}”  或  :class="[var1,var2...]"
 
+对象写法中键为样式名，值为bool值
 
+数据写法可以将样式名设置为变量名
 
 
 
@@ -155,15 +163,6 @@ this.$refs.comA.message
     ```
 
 ---
-
-### Vue数据双向绑定
-
-Object.defineProperty()：
-
-* 缺点
-  * 深度监听需要一次递归
-  * 无法监听新增属性/删除属性
-  * 无法原生监听数组，需要特殊处理
 
 
 
@@ -590,6 +589,8 @@ router.beforeEach：注册全局前置守卫：当一个导航触发时，全局
 
 ### vue的生命周期
 
+一个生命周期由父组件开始，但只有全部子组件完成了这个生命周期，父组件才能完成
+
 * 可分为8个阶段：创建前/后, 载入前/后,更新前/后,销毁前/销毁后
 
 * 开始创建、初始化数据、编译模板、挂载Dom、渲染→更新→渲染、销毁等一系列过程，我们称这是Vue的生命周期（也就是从创建到销毁的过程）
@@ -613,8 +614,9 @@ router.beforeEach：注册全局前置守卫：当一个导航触发时，全局
 * ##### 常用的生命周期钩子函数
 
   * created：实例已经创建完成之后调用
-  * mounted：el被创建的vm.$el替换，并且挂载到实例上之后调用该钩子函数。
+  * mounted：el被创建的vm.$el替换，并且挂载到实例上之后调用该钩子函数；ajax异步获取数据会放在最后，所以放在mounted之前都没有用
   * activated：keep-alive组件激活时使用
+  * beforeDestory：解绑自定义事件$event.$off；清除定时器；解除自定义dom事件比如window.scroll等
 
 ### 父子组件通信
 
@@ -631,54 +633,78 @@ router.beforeEach：注册全局前置守卫：当一个导航触发时，全局
   * $refs：默认是一个空的对象，需要在使用的组件中添加
 * 子组件访问父组件$paent   
 
-### hash和history的区别
+## hash和history的区别
 
 最直观的区别是url中hash模式带了一个#
 
 前端路由的核心就在于改变视图的同时不会向后端发出请求
 
-**hash**：hash虽然出现在url中，但不会被包括在HTTP请求中，对后端完全没有影响，因此hash不会重新加载页面
+### hash
 
-**history**：利用了html5 history interface中新增的pushState()和replaceState()方法，这两个方法应用于浏览器中的历史记录栈，在当前已有back，forward，go的基础上，他们提供了对浏览记录进行修改的功能，只是他们执行修改时，虽然改变了当前url，但浏览器不会立即发送后端请求
+hash虽然出现在url中，但不会被包括在HTTP请求中，对后端完全没有影响，因此hash不会重新加载页面
+
+#后面的部分就是hash部分，hash的变化会触发网页跳转，就是可以使浏览器前进后退，但是hash变化不会刷新页面，而且hash不会提交到服务端
+
+hash变化可能的三种原因：js修改，手动修改，浏览器前进后退
+
+hash的变化会触发window.onhashchange事件，并且可以传入事件event获取新旧url，也可以通过location对象获取当前url的hash值
+
+### history
+
+利用了html5 history interface中新增的pushState()和replaceState()方法，这两个方法应用于浏览器中的历史记录栈，在当前已有back，forward，go的基础上，他们提供了对浏览记录进行修改的功能，只是他们执行修改时，虽然改变了当前url，但浏览器不会立即发送后端请求
 
 hash模式下，仅仅hash符号之前的内容会被包含在请求中。因此对于后端来说即使没有做到对路由的全覆盖，也不会返回404错误
 
 history模式下，前端的url必须和实际向后端发起请求的url一致
 
+需要服务端配合，在切换路由时可以携带一些数据进行SEO优化
+
+history模式跳转路由和hash一样不会刷新页面：实现方式和hash不同
+
+* history.pushState()：使用这个api修改url，浏览器不会刷新页面
+* window.onpopstate事件：监听浏览器前进后退引起url的改变
+
+
+
+### Vue数据双向绑定
+
+Object.defineProperty()：
+
+* 缺点
+  * 深度监听需要一次递归
+  * 无法监听新增属性/删除属性
+  * 无法原生监听数组，需要特殊处理
 
 
 
 
 
+## $nextTick()
 
----
+Vue是一个异步渲染的框架，为了尽量减少dom操作，所以一个函数在data改变后，dom不会立刻去渲染，他会延迟等待多次修改data操作合并成一次再去执行。所以不能再data改变后在同一个函数内立刻去获取dom元素并操作dom元素。如果一定要操作dom元素需要使用$nextTick()
 
-# Vue原理
+$nextTick(callback)的异步回调函数在DOM渲染之后才被触发，以获取最新的DOM节点，所以在更新数据之后，如果要拿到dom的元素并操作，需要将操作dom部分的代码放入$nextTick的回调函数，这样dom渲染完成后就会去执行操作dom的代码。
 
-MVVM：数据驱动视图
-
-### 为什么v-for中要使用key
-
-
-
-
-
-## Vue响应式原理
-
-* 通过Object.defineProperty()实现响应式
-  * 监听对象
-    * 深度监听：需要递归到底，一次性的计算量比较大；比如他要监听的是一个层级很深的对象，就需要一直递归下去
-    * 无法监听新增属性或删除属性
-  * 监听数组
-    * 
-  * 监听复杂对象
-  * 缺点
-
-
+```js
+method() {
+	addItem() {
+		this.list.push('abc')
+        this.list.push('123')
+		// 每次触发就往data里的list中加一项，与数据双向绑定的ul就会多一个li
+		// 但数据改变dom不会立刻更新，就去操作ul输出有几个li，输出的是dom更新之前的li个数
+		// const ulEle = this.$refs.ulbox
+		// console.log(ulEle.childNodes.length)      
+        //放进this.$nextTick的回调中就可以等dom渲染完后才执行这段代码
+		this.$nextTick(() => {
+		   const ulEle = this.$refs.ulbox
+		   console.log(ulEle.childNodes.length)
+		})
+	}
+}
+```
 
 
 
+## computed和watch
 
-
-
-
+computed有缓存，不会像调用方法一样重新计算一个值

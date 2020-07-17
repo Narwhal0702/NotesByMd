@@ -802,15 +802,21 @@ add(fetchX(),fetchY())
 	})
 ```
 
-这段代码中有两层Promise，fetchX和fetchY是直接调用的，他们的返回值(promise)被传给add；这些promise代表的底层值的可用时间可能是现在或将来，但promise保证了行为的一致性，可以按照不依赖与时间的方式追踪值X和Y。
+这段代码中有两层Promise，fetchX和fetchY是直接调用的，他们的返回值(promise)被传给add；这些promise代表的底层值的可用时间可能是现在或将来，但promise保证了行为的一致性，可以按照不依赖与时间的方式追踪值X和Y；第二层是add()函数，通过promise.all()创建并返回promise。通过调用then来等待这个promise。add运算完成后，未来值sum就准备好了可以打印出来，这个等待未来值X和Y的逻辑在add内部
 
+在add内部，promise.all()调用创建了一个promise(等待promiseX和promiseY的决议)，链式调用.then()创建了另外一个promise(这个promise由return value[0]+value[1]这一行立即决议得到加运算的结果)；链add调用终止处调用then，代码借我处实际上操作的是返回的第二个promise；尽管then后面没有链接任何东西，但实际上也创建了一个新的promise
 
+通过promise调用then实际上可以接受两个参数，一个用于完成情况，一个用于拒绝情况，就比如在获取x或y时出错或者在相加的过程中出错，add返回的就是一个被拒绝的promise，传给then的第二个错误处理回调就会从这个promise得到拒绝值
 
+从外部看由于promise封装依赖于等待底层值的完成或拒绝，因此promise可以按照可预测的方式组成而不用担心时序或底层的结果
 
+一旦Promise决议，它就永远保持在这个状态这是它就变成了不变值，可以根据需求多次查看，就是因为promise决议后就是外部不可变的值，可以把这个值传递给第三方并且确信它不会被修改，特别是对于多个地方查看同一个promise的情况。
 
+---
 
+假设要调用一个函数foo执行某个任务，但这个任务可能立即完成也可能需要一段时间才能完成，我们只需要知道foo什么时候结束，就可以进行下一个任务，换句话说就是要通过某种方式在foo完成的时候得到通知
 
-
+使用回调的话，通知就是任务foo调用的回调，使用Promise的话，就是侦听来自foo的事件，然后在得到通知的时候根据情况继续
 
 
 
