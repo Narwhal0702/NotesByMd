@@ -346,3 +346,40 @@ border-radius可以单独指定水平和垂直半径，只要用一个`/` 分隔
 }
 ```
 
+### 平行四边形实现
+
+* 通过使用skew()对矩形进行斜向拉伸：会导致它的内容也发生斜向变形；
+  * 解决方法，使用额外的元素包裹然后对内容进行反向斜向拉伸
+
+```css
+.div{
+    transform:skewX(-45deg)
+}
+```
+
+* 把所有样式应用到伪元素上然后对伪元素进行变形，因为内容不是包含在伪元素里面所以不会受到变形的影响；要使伪元素保持灵活性自动继承宿主元素的尺寸，或者当宿主元素的尺寸是由其内容来决定的时候，可以使用相对定位和绝对定位，然后把所有偏移量都设置为0，这样在水平和垂直元素上都会被拉伸至宿主元素的尺寸
+
+```css
+.button{
+	position: relative;
+}
+.button::before{
+	content: '';
+	position: absolute;
+	top: 0;right: 0;bottom: 0;left: 0;
+}
+/* 此时伪元素生成的方块是重叠在内容之上的,一旦给它设置背景就会遮住内容,可以通过设置z-index将他的堆叠元素推到宿主元素之后 */
+.button{
+	position: relative;
+}
+.button::before{
+	content: ''; /*用伪元素来生成一个矩形*/
+	position: absolute;
+	top: 0;right: 0;bottom: 0;left: 0;
+	background-color: #58a;
+	transform: skew(45deg);
+}
+/* 设置样式为正方形使用rotate后还可以得到菱形元素 */
+```
+
+关键在于利用伪元素以及定位属性产生了一个方块，然后对伪元素进行样式设置然后将其放在宿主元素的下层
