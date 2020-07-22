@@ -19,15 +19,7 @@
 
 
 
-## css中的单位
 
-* px：像素
-* em：1em为字体当前尺寸，2em为字体尺寸的两倍、
-* ex：一个ex是一个字体的x-height(x-height通常是字体尺寸的一般)
-* %：百分比
-* rem：相对与根节点html的字体大小来计算
-* vw：视窗宽度：1vw等于视窗宽度的1%
-* vh：视窗高度：1vh等于视窗高度的1%
 
 ## CSS选择器
 
@@ -92,10 +84,49 @@
 * css3选择器
 
   
+---
 
-  ​	
 
-## import
+
+## position属性
+
+* 固定定位fixed
+  	元素的位置相对于浏览器是固定位置，即使窗口是滚动的它也不会移动
+    fixed定位使元素的位置与文档流无关，因此不占据空间
+    fixed定位的元素和其他元素重叠
+* 相对定位relative
+  	如果对一个元素进行相对定位，它将出现在它所出现的位置上。然后可以通过设置垂直或水平位置，让这个元素相对于它的起点进行移动。
+    在使用相对定位时，无论是否进行移动，元素仍然占据原来的空间，因此移动元素会导致覆盖其他框
+*  绝对定位absolute
+    	绝对定位的元素的位置相对于已定位的父元素，如果元素没有已定位的父元素，那么它的位置相对于<html>
+        	absolute定位使元素的位置与文档流无关，因此不占据空间
+        	absolute定位的元素和其他元素重叠
+*  粘性定位sticky
+    	元素先按照普通文档流定位，然后相对于该元素在流中的(BFC)和最近的块级祖先元素定位。而后，元素定位表现在跨域特定阈值前为相对定位，之后为固定定位
+*  默认定位static
+    	默认值，没有定位，元素出现在正常的流中
+  inherit
+  规定应该从父元素继承position属性的值
+
+
+
+
+
+
+
+
+
+## 响应式布局
+
+### css中的单位
+
+* px：像素
+* em：1em为字体当前尺寸，2em为字体尺寸的两倍、
+* ex：一个ex是一个字体的x-height(x-height通常是字体尺寸的一般)
+* %：百分比
+* rem：相对与根节点html的字体大小来计算
+* vw：视窗宽度：1vw等于视窗宽度的1%
+* vh：视窗高度：1vh等于视窗高度的1%
 
 ### 关于响应式布局的几种方式
 
@@ -271,7 +302,64 @@
 
       * 解决方法：使用picture标签，picture中可包含source标签对图片进行兼容性处理
 
-### block、inline、inline-block的区别。
+### 响应式布局常见解决方案
+
+* 基础概念：
+  * 像素：是网页布局的基础，一个像素表示了计算机屏幕所能显示的最小区域，像素分为css像素和物理像素。在js或css代码中使用的px单位就是css像素，物理像素也称设备像素，只与设备的硬件密度相关，任何设备的物理像素都是固定的
+  * 视口：只浏览器显示内容的屏幕区域
+    * 布局视口
+      * 布局视口定义了pc网页在移动端的默认布局行为，也就是说在不设置网页的viewport的情况下，pc端的网页默认会以布局视口为基准，在移动端进行展示
+    * 视觉视口
+      * 视觉视口表示浏览器内看到的网站的显示区域，用户可以通过缩放来查看网页的显示内容，从而改变视觉视口。
+    * 理想视口
+      * 在移动设备中就是指设备的分辨率。换句话说，理想视口或者说分辨率就是给定设备物理像素的情况下，最佳的“布局视口”。
+
+* px和视口
+  * 1个css像素可以表示为物理像素/分辨率，如在iphone6移动端一个css像素为0.75px而在pc端则为2px
+* 媒体查询
+  * 在css文件中，1px所表示的物理像素的大小是不同的，因此通过一套样式，是无法实现各端的自适应，所以给每一种设备设置一套不同的样式来实现自适应效果
+
+```css
+@media screen and (max-width: 960px){
+    body{
+      background-color:#FF6699
+    }
+}
+
+@media screen and (max-width: 768px){
+    body{
+      background-color:#00FF66;
+    }
+}
+```
+
+缺点：在浏览器大小改变时，需要改变的样式太多，那么多套样式代码会很繁琐
+
+* 百分比
+  * 子元素height和width的百分比：子元素的height或width中使用百分比，是相对于子元素的直接父元素，width相对于父元素的width，height相对于父元素的height。
+  * top和bottom 、left和right：子元素的top和bottom如果设置百分比，则相对于直接非static定位(默认定位)的父元素的高度，同样，子元素的left和right如果设置百分比，则相对于直接非static定位(默认定位的)父元素的宽度
+  * padding：子元素的padding如果设置百分比，不论是垂直方向或者是水平方向，都相对于直接父亲元素的width，而与父元素的height无关。子元素的初始宽高为0，通过padding可以将父元素撑大，说明padding不论宽高，如果设置成百分比都相对于父元素的width
+  * margin：跟padding一样，margin也是如此，子元素的margin如果设置成百分比，不论是垂直方向还是水平方向，都相对于直接父元素的width。
+  * border-radius：border-radius不一样，如果设置border-radius为百分比，则是相对于自身的宽度
+  * 缺点：
+    * 计算困难，如果我们要定义一个元素的宽度和高度，按照设计稿，必须换算成百分比单位
+    * 各个属性中如果使用百分比，相对父元素的属性并不是唯一的
+
+* 通过rem来实现响应式布局
+  * rem单位都是相对于根元素html的font-size来决定大小的,根元素的font-size相当于提供了一个基准，当页面的size发生变化时，只需要改变font-size的值，那么以rem为固定单位的元素的大小也会发生响应的变化。如果通过rem来实现响应式的布局，只需要根据视图容器的大小，动态的改变font-size即可
+  * 可通过webpack实现一些单位之间的转换
+  * 缺点：在响应式布局中，必须通过js来动态控制根元素font-size的大小，具有一定的耦合性，且font-size的代码要放在样式之前
+* 通过vw/vh实现自适应
+  * vw表示相对于视图窗口的宽度，vh表示相对于视图窗口高度，vmin表示vw和vh中的较小值，vmax表示vw和vh中的较大值
+  * 单位换算：如果要将px换算成vw单位，很简单，只要确定视图的窗口大小
+
+
+
+---
+
+
+
+## block、inline、inline-block的区别。
 
 block元素会独占一行，多个block元素会各自新起一行。默认情况下，block元素宽度自动填满其父元素宽度。
 
@@ -290,6 +378,103 @@ inline元素的margin和padding属性，水平方向的padding-left, padding-rig
 
 
 inline-block：简单来说就是将对象呈现为inline对象，但是对象的内容作为block对象呈现。之后的内联对象会被排列在同一行内。比如我们可以给一个link（a元素）inline-block属性值，使其既具有block的宽度高度特性又具有inline的同行特性
+
+
+
+---
+
+
+
+## clientHeight,scrollHeight,offsetHeight ,scrollTop, offsetTop,clientTop
+
+* clientHeight：表示的是可视区域的高度，不包含border和滚动条
+
+  offsetHeight：表示可视区域的高度，包含了border和滚动条
+
+  scrollHeight：表示了所有区域的高度，包含了因为滚动被隐藏的部分。
+
+  clientTop：表示边框border的厚度，在未指定的情况下一般为0
+
+  scrollTop：滚动后被隐藏的高度，获取对象相对于由offsetParent属性指定的父坐标(css定位的元素或body元素)距离顶端的高度。
+
+
+
+---
+
+
+
+##  元素的水平居中方案
+
+* 父元素相对定位，子元素绝对定位
+  * top0,right0,bottom0,left0，margin:auto
+  * top,left:50%，同时margin-top,margin-left减去自身一半的值
+  * transform:translate(-50%,-50%)
+* flex
+  * 将父元素设置为display:flex，justify-content:center，align-items:center
+
+
+
+---
+
+
+
+## 设置一个元素的背景颜色，背景颜色会填充哪些区域
+
+background-color设置的背景颜色会填充元素的content,padding,border区域
+
+
+
+## 实现圆形可点击区域
+
+1.客户端图像映射，带有可点击区域的一幅图像
+
+2.css实现
+
+3.JavaScript方法定义一个圆形的区域
+
+## 实现0.5px的细线
+
+* 使用meta viewport的方法
+
+```css
+<meta name="viewport" content="width=device-width, initial-scale=0.5, minimum-scale=0.5, maximum-scale=0.5"/>
+```
+
+只针对移动端
+
+* transform:scale(0.5,0.5)
+
+## css3动画与js动画对比
+
+css3动画：@keyframes 规则用于创建动画，使用from...to或百分比来控制动画；animation属性为动画添加其他效果，不如animation-delay,animation-duration,animation-direction等
+
+* js动画
+  * 缺点：
+    * 在浏览器主线程中运行，主线程还有其他js脚本，样式布局之类的，可能会对其干扰导致动画出现阻塞从而造成丢帧的现象
+    * 复杂度比较高
+  * 优点：
+    * 控制动画的能力比较强，可以在播放过程中进行控制使其开始暂停
+    * 动画效果比较丰富比如曲线运动
+    * css有兼容性问题，js比较少
+* css动画
+  * 缺点：
+    * 运行过程比较弱，不能再特定位置添加一个特定的事件点
+    * 代码冗长
+  * 优点：
+    * 浏览器可以对动画进行优化，会把每一次重绘的步骤合并起来减少消耗，也可以通过硬件gpu来提高性
+    * js在主线程执行，css订花可以使用合成器线程执行
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -346,6 +531,8 @@ border-radius可以单独指定水平和垂直半径，只要用一个`/` 分隔
 }
 ```
 
+---
+
 ### 平行四边形实现
 
 * 通过使用skew()对矩形进行斜向拉伸：会导致它的内容也发生斜向变形；
@@ -383,3 +570,11 @@ border-radius可以单独指定水平和垂直半径，只要用一个`/` 分隔
 ```
 
 关键在于利用伪元素以及定位属性产生了一个方块，然后对伪元素进行样式设置然后将其放在宿主元素的下层
+
+---
+
+### 菱形图片的实现
+
+将一个div标签包裹起来使用rotate变换样式，但是会因为裁剪问题变成一个八角的形状。这时可以使用scale将图片放大，因为通过width属性只会基于左上角进行放大
+
+可以使用clip-path属性对元素进行裁剪
