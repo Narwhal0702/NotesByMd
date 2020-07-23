@@ -354,9 +354,23 @@ template类似于html但不是html，相比于html他多了指令插值表达式
 
 ---
 
+### 数据双向绑定
 
+Vue2.x的数据绑定原理是通过Object.defineProperty()实现，采用了数据劫持结合发布-订阅者模式来劫持各个属性的setter和getter，在数据变动时发布消息给订阅者，触发响应的监听回调。当把一个普通的JavaScript对象传给Vue实例来作为它的data选项时，Vue将遍历它的属性，用Object.defineProperty将他们转为getter或setter。用户看不见getter/setter，但在内部它们让vue追踪依赖，在属性被访问和修改时通知变化
 
+要实现MVVM模式的双向绑定需要实现以下几点
 
+* 实现一个数据监听器Observer，能够对数据对象的所有属性进行监听，如果有变动就可以拿到最新的值并通知订阅者
+* 实现一个指令解析器Compile，对每个元素节点的指令进行扫描和解析，根据指令模板替换数据，以及绑定相应的更新函数
+* 实现一个Watcher，作为连接Observer和Compile的桥梁，能够订阅并收到每个属性变化的通知，执行指令绑定的响应回调函数，从而更新视图
+
+Vue3以上的版本使用了Proxy来进行监听
+
+Object.defineProperty有以下缺点
+
+* 不能监听数组变化，proxy可以原生支持监听数组
+* 要配合Object.keys遍历对象必须遍历对象的每一个属性
+* 必须深层遍历嵌套的对象，这样就会造成性能的消耗
 
 
 
