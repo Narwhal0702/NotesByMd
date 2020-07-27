@@ -33,7 +33,27 @@
 
 key值需要使用驼峰
 
+#### v-if和v-show
 
+* v-if直接销毁和重建DOM让达到让元素显示和隐藏效果，v-if是惰性的，可能不创建
+* v-show通过修改元素的displayCSS属性让其显示或者隐藏，不管开始条件是什么元素都会渲染，改变的只是css
+
+#### \<style scoped>
+
+* CSS只在当前组件中起作用
+
+#### \<keep-alive>
+
+* 包裹动态组件时，会缓存不活动的组件实例，主要用于保留组件状态或避免重新渲染。比如一个列表和详情页，用户经常在两者间切换，这样就可以对列表组使用\<keep-alive>进行包裹，这样用户从详情返回列表时，都能从缓存中快速渲染而不是重新渲染，降低了性能。
+
+#### v-el
+
+提供一个页面上已存在的DOM元素作为Vue实例挂载的目标，可以使CSS选择器，也可以是HTMLElement实例
+
+#### 嵌套路由的实现
+
+* 在VueRouter中的参数中使用children配置，然后将\<router-view>作为的路由的出口，路由匹配到的组件就会渲染在router-view中
+* 子路由的出口必须在父路由中，否则子路由无法显示，通过\<router-link  to="url">指定子路由连接地址
 
 ### 过滤器
 
@@ -129,11 +149,24 @@ this.$parent.message = ''
 this.$refs.comA.message
 ```
 
+#### 父子组件通信
+
+* 组件化：将一个页面拆分成各个功能块，方便页面的管理和维护
+
+* 父组件传给子组件数据：
+  * props
+    * 传递给子组件支持的数据类型，对象或数组默认值必须是一个工厂函数，也就是需要用function来返回数据获取数组可以有默认值；可以通过数组定义多个类型；可自定义类型
+    * 传递数据时v-bind后面不支持驼峰，需要进行-转换
+* 子组件往父组件传递
+  * 自定义事件this.$emit('eventNam',)
+* 父组件访问子组件对象
+  * $children通过数组的下标访问或所有子组件
+  * $refs：默认是一个空的对象，需要在使用的组件中添加
+* 子组件访问父组件$paent   
 
 
 
-
-### 关于自定义事件
+## 关于自定义事件
 
 事件名不存在自动的大小写转换，触发事件需要完全匹配监听这个事件所用的名称。
 
@@ -145,7 +178,7 @@ this.$refs.comA.message
 
 
 
-#### Vue组件中的data为什么是一个函数
+## Vue组件中的data为什么是一个函数
 
 组件是可复用的Vue实例，一个组件被创建好之后，就可能被用在各个地方，而组件不管被复用了多少次，组件中的data数据都应该是隔离的互不影响。基于这个理念，组件每复用一次，data数据就用该被复制一次，之后当某一处复用的地方组件内data数据被改变时，其他复用地方组件的data数据不受影响。
 
@@ -163,29 +196,7 @@ Model层代表数据模型，也可以在Model中定义数据修改和操作的�
   * 独立开发：可以将业务逻辑，数据，视图分开开发
   * 可测试：将ViewModel业务逻辑独立出来可测试
 
-#### v-if和v-show
-
-* v-if直接销毁和重建DOM让达到让元素显示和隐藏效果，v-if是惰性的，可能不创建
-* v-show通过修改元素的displayCSS属性让其显示或者隐藏，不管开始条件是什么元素都会渲染，改变的只是css
-
-#### \<style scoped>
-
-* CSS只在当前组件中起作用
-
-#### \<keep-alive>
-
-* 包裹动态组件时，会缓存不活动的组件实例，主要用于保留组件状态或避免重新渲染。比如一个列表和详情页，用户经常在两者间切换，这样就可以对列表组使用\<keep-alive>进行包裹，这样用户从详情返回列表时，都能从缓存中快速渲染而不是重新渲染，降低了性能。
-
-#### v-el
-
-提供一个页面上已存在的DOM元素作为Vue实例挂载的目标，可以使CSS选择器，也可以是HTMLElement实例
-
-#### 嵌套路由的实现
-
-* 在VueRouter中的参数中使用children配置，然后将\<router-view>作为的路由的出口，路由匹配到的组件就会渲染在router-view中
-* 子路由的出口必须在父路由中，否则子路由无法显示，通过\<router-link  to="url">指定子路由连接地址
-
-### vue的生命周期
+## vue的生命周期
 
 一个生命周期由父组件开始，但只有全部子组件完成了这个生命周期，父组件才能完成
 
@@ -216,20 +227,7 @@ Model层代表数据模型，也可以在Model中定义数据修改和操作的�
   * activated：keep-alive组件激活时使用
   * beforeDestory：解绑自定义事件$event.$off；清除定时器；解除自定义dom事件比如window.scroll等
 
-### 父子组件通信
-
-* 组件化：将一个页面拆分成各个功能块，方便页面的管理和维护
-
-* 父组件传给子组件数据：
-  * props
-    * 传递给子组件支持的数据类型，对象或数组默认值必须是一个工厂函数，也就是需要用function来返回数据获取数组可以有默认值；可以通过数组定义多个类型；可自定义类型
-    * 传递数据时v-bind后面不支持驼峰，需要进行-转换
-* 子组件往父组件传递
-  * 自定义事件this.$emit('eventNam',)
-* 父组件访问子组件对象
-  * $children通过数组的下标访问或所有子组件
-  * $refs：默认是一个空的对象，需要在使用的组件中添加
-* 子组件访问父组件$paent   
+* 
 
 ## hash和history的区别
 
@@ -263,15 +261,6 @@ history模式跳转路由和hash一样不会刷新页面：实现方式和hash�
 * window.onpopstate事件：监听浏览器前进后退引起url的改变
 
 
-
-### Vue数据双向绑定
-
-Object.defineProperty()：
-
-* 缺点
-  * 深度监听需要一次递归
-  * 无法监听新增属性/删除属性
-  * 无法原生监听数组，需要特殊处理
 
 
 
@@ -317,7 +306,7 @@ watch在监听复杂数据时需要使用深度监听deep，因为vue不监控�
 
 
 
-### 模板编译的原理
+## 模板编译的原理
 
 template类似于html但不是html，相比于html他多了指令插值表达式等诸多特性。所以他就是将一种类似于html的代码转化为了某种js代码来完成这种操作这就叫模板编译
 
@@ -329,7 +318,7 @@ template类似于html但不是html，相比于html他多了指令插值表达式
 
 
 
-### 响应式原理
+## 响应式原理
 
 当把一个普通的JavaScript对象传入vue实例中作为data选项，Vue将遍历该对象的所有property，并使用Object.defineProperty将这些property全部转为getter/setter
 
@@ -354,7 +343,7 @@ template类似于html但不是html，相比于html他多了指令插值表达式
 
 ---
 
-### 数据双向绑定
+## 数据双向绑定
 
 Vue2.x的数据绑定原理是通过Object.defineProperty()实现，采用了数据劫持结合发布-订阅者模式来劫持各个属性的setter和getter，在数据变动时发布消息给订阅者，触发响应的监听回调。当把一个普通的JavaScript对象传给Vue实例来作为它的data选项时，Vue将遍历它的属性，用Object.defineProperty将他们转为getter或setter。用户看不见getter/setter，但在内部它们让vue追踪依赖，在属性被访问和修改时通知变化
 
@@ -371,6 +360,133 @@ Object.defineProperty有以下缺点
 * 不能监听数组变化，proxy可以原生支持监听数组
 * 要配合Object.keys遍历对象必须遍历对象的每一个属性
 * 必须深层遍历嵌套的对象，这样就会造成性能的消耗
+
+### 数据劫持与发布订阅
+
+数据驱动视图的第一步就是数据劫持到data数据的更新，然后再使用发布订阅模式触发视图的更新。核心api是Object.defineProperty。Vue3使用的是proxy但有一定的兼容性问题
+
+###  defineProperty数据监听的使用
+
+`Object.defineProperty(obj,"属性名",属性值)`
+
+```js
+const data = {}
+const name = 'wtw'
+Object.defineProperty(data,"name",{
+	get:function(){
+		console.log('getter');
+		return name
+	},
+	set:function(newVal){
+		console.log('setter');
+		name = newVal
+	}
+})
+```
+
+只有Object.defineProperty不能实现数据劫持
+
+```js
+//更新视图函数
+function updateView(){
+	console.log('视图更新');
+	dep.notify() // 触发发布订阅模式的更新通知
+}
+//对对象属性进行递归监听并设置getter与setter
+function defineReactive(target,key,value){
+	// 递归进行对象的深度监听
+	observer(value);
+	Object.defineProperty(target,key,{
+		get(){
+			return value
+		},
+		set(newVal){
+			if(newVal !== value){
+				observer(newVal)
+				value = newVal;
+				updateView();
+			}
+		}
+	})
+}
+//重定义数组原型用来监听数组操作
+const oldArrayProperty = Array.prototype;
+//创建新对象,原型指向oldArrayProperty
+const arrProto = Object.create(oldArrayProperty)
+//监听以下方法对数组的操作
+['push', 'pop', 'shift', 'unshift', 'splice'].forEach(methodName => {
+  arrProto[methodName] = function () {
+    updateView() // 更新视图
+    oldArrayProperty[methodName].call(this, ...arguments)
+  }
+})
+//监听对象属性
+function observer(target){
+	if(typeof target !== 'object' || target === null){
+		//不是数组或对象就不进行监听
+		return target;
+	}
+	if(Array.isArray(target)){
+		target.__proto__ = arrProto;
+	}
+	for(let key in target){
+		defineReactive(target,key,target[key])
+	}
+}
+class Dep{
+	constructor(){
+		this.subs=[]//订阅者数组
+	},
+	addSub(wather){ // 将订阅者加入订阅数组
+		this.subs.push(wather)
+	},
+	notify(){ // 通知订阅者数据更新了，调用自己的update方法更新
+		this.subs.forEach(item=>{
+				item.update()
+		})
+	}
+}
+
+class Watcher{
+	constructor(elementName){
+		this.elementName = elementName
+	}
+	// 订阅者主动进行数据更新
+	updata(){
+		console.log(this.elementName +'组件要update')
+		// 在这里更新组件的dom
+	}
+}
+const dep = new Dep()
+
+// 对三个元素分别进行订阅
+const watcher1 = new Watcher('元素1')
+dep.addSub(watcher1)
+const watcher2 = new Watcher('元素2')
+dep.addSub(watcher2)
+const watcher3 = new Watcher('元素3')
+dep.addSub(watcher3)
+```
+
+#### 缺点：
+
+* 深度监听消耗计算大，需要一次就递归到最后一层对象；Proxy分多次递归，用到该属性时才会递归到那里
+* 数组也不能直接被监听需要重写数组原型，对原型上的方法特殊处理后才能进行监听
+* 直接使用点方法和delete方法进行增加和删除无法被直接监听到，Vue中需要使用`Vue.set`和`Vue.delete`来操作
+
+### Proxy数据监听的使用
+
+除了get和set外还可以删除属性，无需调用Vue.set就可以监听到新增的属性
+
+```js
+
+```
+
+
+
+
+
+
 
 
 
