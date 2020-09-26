@@ -22,7 +22,7 @@
 
 
 
-## 浏览器服务器的处理流程
+## 浏览器输入url地址到页面渲染的过程
 
 #### 浏览器输入url地址到页面渲染的过程
 
@@ -78,7 +78,11 @@ Web服务器解析请求，定位请求资源，然后执行请求分析，查�
 
 
 
-### 关于meta中的标签的作用
+---
+
+
+
+## 关于meta中的标签的作用
 
 提供有关页面的元信息，比如针对搜索引擎和更新频度的描述和关键词，也可以定义页面重定向和刷新，描述，最新版本以及为移动端设备添加视口
 
@@ -203,6 +207,83 @@ QQ浏览器（X5内核）：
 </ HEAD>
 ```
 
+
+
+---
+
+
+
 ### noscript标签
 
 浏览器未开启或不支持JavaScript时显示的内容
+
+
+
+---
+
+
+
+
+
+## H5新特性
+
+* 一些语义化标签比如header，footer，nav，section，aside，article等
+
+* 增强了表单元素input，添加了type属性password,email,url,number等
+
+* 新增表单元素datalist元素规定输入域的选项列表，使用input的list属性和datalist的id属性绑定；keygen提供一种验证用户的可靠方法
+
+* 新增的表单属性placeholder，required，min，max
+
+* 新增音频视频video，audio
+
+* location定位
+
+* 本地存储localStorage，sessionStorage
+
+* 新事件onresize，ondrag，onscroll，onmousewheel，onerror等
+
+* websocket
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

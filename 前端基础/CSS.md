@@ -17,6 +17,31 @@
 
 
 
+---
+
+
+
+## 盒子模型
+
+是用来装页面元素的矩形区域；css3中引入了box-sizing属性，值为content-box为标准盒模型；值为border-box指IE盒模型
+
+* 标准盒子模型：width，height指content部分的宽高度
+* IE盒模型：width，height指content+padding+border的宽高度
+
+### margin，padding，border
+
+* padding：在元素内容的一边或多个边添加空间，它是透明的，所以元素的背景颜色或背景图像会显示出来
+* border：控制元素每个边的边框显示，包括内容和padding，这一般是一条着色或透明的线条，border属性定义了该线条的宽度，线型和颜色，可以是圆角甚至是边框图像，边框在元素padding和margin之间添加，默认会覆盖元素的背景
+* margin：影响元素的一边或多个边上的空间，且是透明的；但与padding不同，它可以是负值和auto值，这些允许将元素从最初的位置移开，或者改变它与周围元素的交互方式
+
+
+
+
+
+
+
+
+
 
 
 ## CSS选择器
@@ -160,12 +185,6 @@
   * inherit：规定应该从父元素继承position属性的值
 
 
-
-## margin，padding，border
-
-* padding：在元素内容的一边或多个边添加空间，它是透明的，所以元素的背景颜色或背景图像会显示出来
-* border：控制元素每个边的边框显示，包括内容和padding，这一般是一条着色或透明的线条，border属性定义了该线条的宽度，线型和颜色，可以是圆角甚至是边框图像，边框在元素padding和margin之间添加，默认会覆盖元素的背景
-* margin：影响元素的一边或多个边上的空间，且是透明的；但与padding不同，它可以是负值和auto值，这些允许将元素从最初的位置移开，或者改变它与周围元素的交互方式
 
 
 
@@ -460,18 +479,92 @@ inline-block：简单来说就是将对象呈现为inline对象，但是对象�
 
 
 
-##  元素的水平居中方案
+##  元素居中方案
 
-* 父元素相对定位，子元素绝对定位
-  * top0,right0,bottom0,left0，margin:auto
-  * top,left:50%，同时margin-top,margin-left减去自身一半的值
-  * transform:translate(-50%,-50%)
-* flex
-  * 将父元素设置为display:flex，justify-content:center，align-items:center
+### 水平居中
+
+父元素相对定位，子元素绝对定位
+
+* `top:0;right:0;bottom:0;left:0;`     `margin:auto;`
+
+* `top:30%;left:50%`      `margin-top,margin-left的值减去自身的一半`
+
+* display:inline的属性可以设置text-align来实现
+
+### 垂直居中
+
+* 父元素display:flex,align-items:center
+* 父元素绝对定位top:50%,margin-top:-(height/2)
+* 高度不确定用transform:translateY(-50%)
+* 父元素table布局，子元素设置vertical-align:center
+
+
+
+### 容器内居中
+
+* position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)
+* 将父元素设置成display:table,子元素设置为单元格display:table-cell
+* 父元素固定宽高，利用定位及设置子元素margin值为自身的一半
+* 父元素固定宽高，子元素设置position:absolute,margin:auto平均分配margin
 
 
 
 ---
+
+
+
+### BFC
+
+块级格式化上下文，是一个独立的渲染区域，规定了内部如何布局，并且这个区域的子元素不会影响到外面的元素。
+
+满足以下条件即可触发BFC：
+
+* 根元素，即html元素
+* float的值不为none
+* overflow的值不为visible
+* position为fixed或absolute的元素
+* display为inline-block,flex.inline-flex,table-cell,table-caption
+
+作用特性：
+
+* 阻止垂直外边距折叠
+
+* 清除内容较多时对浮动元素的环绕
+* 为父元素创建一个BFC改变元素内容较少时出现的高度塌陷
+
+当元素设置了overflow样式且值为visible时，该元素就构建了一个BFC，BFC在计算高度时，内部浮动元素的高度也要计算在内，也就是说技术BFC区域内只有一个浮动元素，BFC的高度也不会发生塌缩，所以达到了清除浮动的目的
+
+
+
+---
+
+
+
+## 关于浮动
+
+
+
+### 清除浮动
+
+* 使用带clear属性的空元素
+* 使用CSS的overflow属性：给浮动元素的容器添加overflow:hidden;或overflow:auto;可以清除浮动。另外在IE6中还需要触发hasLayout,例如为父元素设置容器宽高或设置zoom:1
+* 给浮动的元素容器添加浮动：给浮动元素的容器也添加上浮动属性即可清除内部浮动，但是这样会使其整体浮动，影响布局，不推荐使用
+* 使用邻元素处理：给浮动元素后面的元素添加clear属性
+* 使用CSS的:after伪元素：给浮动元素的容器添加一个clearfix的class，然后给这个class添加一个:after伪元素实现元素末尾添加一个看不见的块元素清除浮动
+
+
+
+
+
+
+
+### 让元素消失的方案
+
+* display:none改变布局，类似于删除了该元素
+* visibility:hidden不会改变布局，不会触发绑定事件
+* opacity:0不会改变页面布局，能触发点击事件
+
+
 
 
 
@@ -514,6 +607,9 @@ css3动画：@keyframes 规则用于创建动画，使用from...to或百分比�
     * 动画效果比较丰富比如曲线运动
     * css有兼容性问题，js比较少
 * css动画
+  * 主要分为transition和animation
+    * transition需要触发一个事件才能改变属性，from...to两帧执行一次
+    * animation不需要触发任何事件的情况下可以随时间改变属性值，每帧执行
   * 缺点：
     * 运行过程比较弱，不能再特定位置添加一个特定的事件点
     * 代码冗长
@@ -525,6 +621,31 @@ css3动画：@keyframes 规则用于创建动画，使用from...to或百分比�
 
 
 
+---
+
+
+
+### link与@import的区别
+
+* link属于html标签没有兼容性，@import是css提供的只要IE5以上才能识别
+* link的权重值高于import
+* link会在页面被加载的时候同时被加载；@import所引用的css会等到页面加载结束后加载
+
+
+
+### 为什么img元素时inline还可以设置宽高
+
+因为img是一个可替换元素拥有内置宽高，类似的元素还有video，iframe等。css可以影响可替换元素的位置，但不会影响到可替换元素自身的内容
+
+### 关于文本溢出的处理
+
+text-overflow属性，值为clip是修剪文本，ellipsis为显示省略符号来表示被修剪的文本，string为使用给定的字符串来代表被修剪的文本
+
+### css3新增的calc属性
+
+动态计算长度值，运算符前后需要保留一个空格
+
+`width:calc(100% - 10px)`
 
 
 
@@ -532,6 +653,32 @@ css3动画：@keyframes 规则用于创建动画，使用from...to或百分比�
 
 
 
+
+
+### 重绘与重排
+
+* document.write：重排整个页面；innerHTML：重绘页面的一部分
+* 浏览器的运行机制：
+  * 构建DOM树：渲染引擎解析html文档，首先将标签转换成DOM树中的DOM节点(包括js生成的标签)生成内容树
+  * 构建渲染树：解析对应的css样式文件，以及html中可见的指令，比如b标签之类的，构建渲染树
+  * 布局渲染树：从根节点递归调用，计算每一个元素的大小位置，给出每个节点所应该在屏幕上出现的精确位置
+  * 绘制渲染树：遍历渲染树，绘制每个节点
+
+**重绘：**当盒子的位置，大小以及其他属性(比如颜色，字体大小)都确定下来之后，浏览器把这些原色都按照各自的特性绘制一遍，将内容呈现在页面上。重绘是指一个元素外观的改变所触发的浏览器行为，浏览器会根据元素的新属性重新绘制，使元素呈现新的外观。触发重绘的条件：改变元素的外观属性如color,background-color等
+
+**重排：**当渲染树中的一部分或全部因为元素的规模尺寸，布局，隐藏等改变而需要重新构建，这就是重排。每个页面至少需要一次重排，就是在页面第一次加载的时候
+
+**两者关系：**在重排的时候，浏览器会使渲染树中受到影响的部分失效，并重新构造这部分渲染树。完成回流后，浏览器重新绘制受影响的部分到屏幕中，这个过程就是重绘。也就是说重排必定会引发重绘，重绘不一定会引发重排。
+
+**重排的条件：**页面初始渲染；添加或删除可见的DOM元素；元素位置改变或使用动画；元素尺寸的改变;浏览器窗口尺寸的变化(触发resize事件)；填充内容的改变；读取某些元素属性等等
+
+**优化：**
+
+* 浏览器方面的优化：会自动把会引起重绘与重排的操作放入一个队列，等到达一定数量或一定时间间隔，对这些操作进行一个批处理
+* 其他优化：减少对渲染树的操作，合并多次的DOM和样式修改
+  * 直接改变元素的calssName
+  * 先设置元素为display:none，然后进行页面布局等操作，设置完成后将元素设置为display:block，这样只会引发两次重绘与重排
+  * 将需要多次重排的元素，position属性设为absolute或fixed，元素脱离了文档流，它的变化不会影响到其他元素
 
 
 
