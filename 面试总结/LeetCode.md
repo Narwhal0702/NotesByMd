@@ -68,6 +68,7 @@ var twoSum = function(nums, target) {
  * @param {number} target
  * @return {number[]}
  */
+新建一个数组，将当前遍历到的下标作为值加到新数组值作为下标的位置，继续遍历如果之后的差值在新数组中找到对应下标，则返回新数组中的值和当前值
 var twoSum = function(nums, target) {
     var temp = [];
     for(var i=0;i<nums.length;i++){
