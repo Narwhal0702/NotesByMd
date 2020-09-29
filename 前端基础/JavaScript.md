@@ -1078,7 +1078,17 @@ new  Promise(function(){})中传入的函数会立即执行，他有两个参数
 
 
 
+---
 
+
+
+### 宏任务，微任务---JavaScript
+
+js在处异步操作时使用的是事件循环机制：处理顺序：同步任务---异步任务（微任务---宏任务）
+
+微任务操作：Promise；MutationObserver
+
+宏任务：setTimeOut；setInterval；I/O操作
 
 
 
