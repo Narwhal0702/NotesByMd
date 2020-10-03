@@ -31,3 +31,34 @@ Promise的基本流程
 
 
 
+
+
+
+
+
+
+## async / await
+
+
+
+### async
+
+函数返回值为promise对象
+
+promise对象的结果由async函数执行的返回值决定
+
+
+
+### await
+
+await右侧表达式一般为promise对象，但也可以是其他值
+
+如果表达式是promise对象，await返回的是promise成功的值
+
+如果表达式是其他值，直接将此值作为await的返回值
+
+
+
+* await函数必须写在async函数中，但async函数中可以没有await
+* 如果await的promise失败了就会抛出异常需要通过try...catch来捕获
+* 

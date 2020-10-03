@@ -72,6 +72,10 @@ title，description，keywords
 
 
 
+---
+
+
+
 ### cookie，session，sessionStorage，localStorage---http
 
 * 储存位置
@@ -145,6 +149,8 @@ TCP建立一次连接后只能发送一次数据
 
 
 
+---
+
 
 
 ### 重绘与重排---css
@@ -174,7 +180,11 @@ TCP建立一次连接后只能发送一次数据
 
 引用计数：每当声明一个变量并将一个引用类型的值赋值给这个变量时，这个变量的引用次数就是1.如果同一个值又被赋值给另一个变量，则引用次数加一；如果这个值引用的变量取得了另一个值，则这个值的引用次数减一；当它为0 时垃圾回收机制自动释放
 
-标记清除：当生命变量时，会将变量标记为进入环境，当变量离开环境时，会将变量标记为离开环境。垃圾收集器会去掉环境中的变量以及环境中的变量引用的标记变量；在此之后再被加上标记的变量被视为准备删除的变量
+标记清除：当生命变量时，会将变量标记为进入环境，当变量离开环境时，会将变量标记为离开环境。垃圾收集器会去掉环境中的变量以及环境中的变量引用的标记变量；在此之后再被加上标记的变量被视为准备删除的变量；
+
+标记阶段：垃圾回收机制会从根开始遍历，可以访问到的变量都会被添加一个标识为可达到对象
+
+清除阶段：对堆内存从头到尾进行线性遍历，如果变量没有被标记为可达到的对象，就会将原先标记清除以便下一次回收操作
 
 
 
@@ -272,9 +282,11 @@ JavaScript中函数内部可以读取外部的变量，但在函数外部无法�
 
 js在处异步操作时使用的是事件循环机制：处理顺序：同步任务---异步任务（微任务---宏任务）
 
+每次准备取出一个宏任务执行前，都要将所有的微任务一个一个取出来执行
+
 微任务操作：Promise；MutationObserver
 
-宏任务：setTimeOut；setInterval；I/O操作
+宏任务：setTimeOut；setInterval；I/O操作；dom事件回调；ajax回调
 
 
 
@@ -393,6 +405,115 @@ js在处异步操作时使用的是事件循环机制：处理顺序：同步任
 
 
 
+### 请求报文，响应报文
+
+请求报文格式
+
+响应报文格式
+
+方法
+
+状态码
+
+首部
+
+
+
+### 水平居中，垂直居中，水平垂直居中
+
+**水平居中**
+
+* margin:0 auto
+
+  * 有宽度时适用
+
+* ```css
+  子：display:inlineblock
+  父：text-align:center
+  ```
+
+  * 有无宽高都适用
+
+* Position定位：子绝父相，子元素left值为50%，margin-left为负值自身宽度的一半
+
+  * 有宽高适用
+
+* transform：子绝父相，子元素left值为50%，transform:translate(-50%,0%)
+
+  * 有无宽高都适用
+
+* flex布局：justify-content:center
+
+  * 有无宽高都适用
+
+* 元素为行内元素，设置父元素text-align:center
+* 元素宽度固定设置左右margin为auto
+* 子绝父相，left:0,right:0,margin:auto
+* display:table-cell
+
+**垂直居中**
+
+* position定位：子绝父相，子元素left值为50%，margin-left为负值自身宽度的一半
+  * 有宽高适用
+
+* transform：子绝父相，子元素left值为50%，transform:translate(0%,-50%)
+  * 有无宽高都适用
+
+* flex布局：align-items:center
+  * 有无宽高都适用
+
+* display:table-cell,vertial-align:middle
+* bottom:0,top:0,margin:auto
+* 文本垂直居中时设置line-height为height值
+
+**水平垂直居中**
+
+* position定位
+
+* transform
+
+* flex布局
+
+* 父元素display:table-cell；子元素vertical-align:middle；text-align:center；
+
+* JavaScript实现
+
+  ```js
+  let Html = document.documentElement;
+  let winW = Html.clientWidth;
+  let winH = Html.clientHeight;
+  let boxW = box.offsetWidth;
+  let boxH = box.offsetHeight;
+  
+  
+  box.style.position = "absolute"
+  box.style.left = (winW-boxW)/2+'px'
+  box.style.top = (winH-boxH)/2+'px'
+  
+  
+  
+  ```
+
+  
+
+
+
+### this指向
+
+一般函数this指向全局作用域window
+
+严格模式下适用use strict，为undefined
+
+对象的方法里调用指向调用该方法的对象
+
+构造函数里的this指向创建出来的实例
+
+
+
+
+
+
+
 
 
 
@@ -415,9 +536,29 @@ DOM树是包含了所有html节点的树，渲染树是DOM树和CSSOM树组合�
 
 
 
-### Prototype，\_\_proto\_\_
+### DOMContentLoad，Load
+
+当纯HTML被完全加载以及解析时，DOMContentLoaded事件会被触发，而不必等待样式表，图片或者子框架完成加载
+
+当一个资源及其依赖资源已完成加载时，会触发load事件
 
 
+
+### 有符号位移，无符号位移
+
+左移运算符<<：按二进制形式把所有的数字向左移动对应的位数，高位移出(舍弃)，低位的空位补0。
+
+右移运算符>>：按二进制形式把所有的数字向右移动对应位移位数，低位移出(舍弃)，高位的空位补符号位，即正数补0，负数补1。
+
+无符号右移运算符：按二进制形式把所有的数字向右移动对应位数，低位移出(舍弃)，高位的空位补零。对于正数来说和带符号右移（>>） 相同，但是对于负数来说不同。
+
+### parseInt的参数
+
+parseInt(string,radix)
+
+string:要被解析的值，如果参数不是字符串则将其转换为字符串
+
+radix:2-36表示进制
 
 
 
@@ -427,13 +568,21 @@ DOM树是包含了所有html节点的树，渲染树是DOM树和CSSOM树组合�
 
 # 单项问题
 
-### SetTimeout参数
+### SetTimeout参数和返回值
 
 function:delay之后执行的函数
 
 delay:可选：延迟的时间，默认取0
 
 arg1,arg2,arg3...：附加参数，定时器到期后会作为参数传递给function
+
+
+
+返回值是一个正整数，表示定时器的编号，可以传递给clearTimeout来取消清时期
+
+
+
+
 
 
 

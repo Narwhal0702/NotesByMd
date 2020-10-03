@@ -218,7 +218,7 @@ Web浏览器通过TCP连接与Web服务器进行交互：浏览器解析出域�
 
   * 编码分块传输，如果使用了content-length，就需要等操作完成后才能得知这个length长度，允许分块传输后产生一个数据块就可以发送一块
 
-  * 支持断点传输，1.0都是从头文件开始传输，也就是从0字节，1.1可以使用染个确定传输范围
+  * 支持断点传输，1.0都是从头文件开始传输，也就是从0字节，1.1可以使用range确定传输范围
 
 * http2.0
 
@@ -257,16 +257,16 @@ Web浏览器通过TCP连接与Web服务器进行交互：浏览器解析出域�
 * name：cookie的名称
 * value：cookie的值
 * domain：字段可以访问cookie的域名。顶级域名只能设置domain为顶级域名，不能设置为二级域名或者三级域名，否则cookie无法生存；二级域名能读取设置了domain为顶级域名或者自身的cookie，不能读取其他二级域名domain的cookie，如果cookie想要在多个二级域名中共享，需要设置domain为顶级域名。
-* path：字段可以访问此cookie的页面路径，比如domain是abc.com，path是/test，那么只要/test路径下的页面可以读取此cookie
+* path：字段可以访问此cookie的页面路径，比如domain是abc.com，path是/test，那么只有/test路径下的页面可以读取此cookie
 * expires/Max-Age：cookie的超时时间，设置一个时间当到达此时间后此cookie失效，不设置的话默认值是session，也就是和session一起失效，当整个浏览器关闭后就失效
-* Size：cookie的带下
+* Size：cookie的大小
 * httpOnly：若此属性为true，则只要http请求头中会带有此cookie的信息，不能通过document.cookie来访问此cookie
 * secure：设置是否只能通过https来传递词条cookie
 
 #### cookie和session的区别，其他验证方法
 
 * cookie数据始终在同源的http请求中携带（即使不需要），即cookie在浏览器和服务器间来回传递。保存用户登录状态。例如将用户id存储于一个cookie内，这样当用户下次访问该页面时就不需要重新登录了；cookie还可以设置过期时间，当超过时间期限后，cookie就会自动消失；
-* cookie将数据存放在客户的浏览器上，session数据存放在服务器上，需要安全考虑的话应该使用cookie，因为攻击者可以分析存放在本地的cookie进行cookie欺骗，而session存放在服务器上，访问量多时会占用服务器性能。**cookie欺骗：CSRF攻击**
+* cookie将数据存放在客户的浏览器上，session数据存放在服务器上，需要安全考虑的话应该使用session，因为攻击者可以分析存放在本地的cookie进行cookie欺骗，而session存放在服务器上，访问量多时会占用服务器性能。**cookie欺骗：CSRF攻击**
 * 单个cookie不能超过4k，浏览器第保存的cookie数量也有限制
 
 #### cookie，sessionStorage与localStorage区别
